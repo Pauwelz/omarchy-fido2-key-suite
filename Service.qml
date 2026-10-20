@@ -759,6 +759,11 @@ Item {
     runWake()
   }
 
+  LockInfo {
+    id: lockInfo
+    active: (root.locked && !root.displaysBlank) || root.previewVisible
+  }
+
   WlSessionLock {
     id: sessionLock
 
@@ -818,6 +823,8 @@ Item {
         displaysBlank: root.screenBlank(lockSurface.screen ? lockSurface.screen.name : "")
         powerSaverActive: root.powerSaverActive
         passwordText: root.enteredPassword
+        info: lockInfo
+        primaryScreen: !lockSurface.screen || lockSurface.screen.name === lockInfo.mainScreen
         fido2Configured: root.fido2Configured
         fido2Active: root.fido2Active
         fido2TokenPresent: root.fido2TokenPresent
@@ -864,6 +871,7 @@ Item {
       loadBackground: root.previewVisible
       powerSaverActive: root.powerSaverActive
       passwordText: ""
+      info: lockInfo
       fido2Configured: root.fido2Configured
       fido2TokenPresent: root.fido2TokenPresent
       // The preview is meant to show what the lock screen will look like, and

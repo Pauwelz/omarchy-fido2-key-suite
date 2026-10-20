@@ -25,6 +25,10 @@ Item {
   property string passwordText: ""
   property bool syncingPasswordText: false
 
+  // Info strip (LockExtras.qml), fed by the one LockInfo in Service.qml.
+  property var info: null
+  property bool primaryScreen: true
+
   property bool fido2Configured: false
   property bool fido2Active: false
   property bool fido2TokenPresent: false
@@ -183,8 +187,17 @@ Item {
       onPositionChanged: root.wakeRequested()
     }
 
+    LockExtras {
+      anchors.fill: parent
+      info: root.info
+      primary: root.primaryScreen
+    }
+
     BorderSurface {
       id: inputField
+      // Shown on the main screen only. Elsewhere it stays as an invisible
+      // field, because typing goes to whichever screen has focus.
+      opacity: root.primaryScreen ? 1 : 0
       width: root.fieldWidth
       height: root.fieldHeight
       anchors.centerIn: parent
@@ -345,7 +358,7 @@ Item {
           anchors.fill: parent
           anchors.margins: -8
           cursorShape: Qt.PointingHandCursor
-          enabled: root.inputEnabled && root.fido2Configured
+          enabled: root.inputEnabled && root.fido2Configured && root.primaryScreen
           onClicked: {
             root.wakeRequested()
             // Already on the key: the click means "try again", which is the
@@ -373,7 +386,7 @@ Item {
       anchors.top: inputField.bottom
       anchors.topMargin: 20
       anchors.horizontalCenter: inputField.horizontalCenter
-      visible: root.fido2Configured && root.inputEnabled
+      visible: root.fido2Configured && root.inputEnabled && root.primaryScreen
 
       implicitWidth: authModeLabel.implicitWidth + 32
       implicitHeight: authModeLabel.implicitHeight + 16
@@ -420,7 +433,7 @@ Item {
       anchors.top: authModeSwitch.visible ? authModeSwitch.bottom : inputField.bottom
       anchors.topMargin: authModeSwitch.visible ? 12 : 18
       anchors.horizontalCenter: inputField.horizontalCenter
-      visible: root.fingerprintConfigured && root.fingerprintUnavailable
+      visible: root.fingerprintConfigured && root.fingerprintUnavailable && root.primaryScreen
       text: Commons.I18n.t("lock.fingerprintUnavailable")
       color: Commons.Color.lock.textError
       font.family: Style.font.family
