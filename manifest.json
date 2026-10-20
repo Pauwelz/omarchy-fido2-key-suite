@@ -25,6 +25,9 @@
     "defaultSection": "right"
   },
   "omarchy": {
-    "clonedFrom": "omarchy.lock"
+    "clonedFrom": "omarchy.lock",
+    "capabilities": [
+      "authentication"
+    ]
   }
 }
